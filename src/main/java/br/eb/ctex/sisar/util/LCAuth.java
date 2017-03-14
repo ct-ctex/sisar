@@ -5,13 +5,17 @@
  */
 package br.eb.ctex.sisar.util;
 
+import br.eb.ctex.sisar.modelo.Usuario;
 import java.util.Hashtable;
+import javax.faces.context.FacesContext;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
+import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.InitialLdapContext;
+import javax.naming.ldap.LdapContext;
 
 /**
  *
@@ -19,84 +23,91 @@ import javax.naming.directory.SearchResult;
  */
 public class LCAuth {
     
-	private final static String ldapURI = "ldap://10.1.62.127:389";
-        private final static String searchBase = "ou=Usuarios,dc=ldap,dc=ctex";
-	private final static String contextFactory = "com.sun.jndi.ldap.LdapCtxFactory";
+	private final static String LDAP_URI = "ldap://10.1.62.127:389";
+        private final static String SEARCH_BASE = "ou=Usuarios,dc=ldap,dc=ctex";
+	private final static String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
+        private final static String SECURITY_CREDENTIALS = "Dem1More";
+        private final static String SECURITY_PRINCIPAL = "admin";
+        
+        // define controles e configurações iniciais para busca no LDAP
+        private static SearchControls getSearchControls() {
+            SearchControls cons = new SearchControls();
+            cons.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            String[] attrIDs = {"uid", "title", "givenname"};
+            cons.setReturningAttributes(attrIDs);
+            cons.setReturningAttributes(null);
+            return cons;
+        }        
+        
+        // configura e recupera contexto inicial
+        private static LdapContext getLdapContext() {
+            LdapContext ctx;
+            try {
+                Hashtable<String, String> env = new Hashtable<>();
+                env.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
+                env.put(Context.SECURITY_AUTHENTICATION, "Simple");
+                env.put(Context.SECURITY_PRINCIPAL, "cn="+SECURITY_PRINCIPAL+",dc=ldap,dc=ctex");
+                env.put(Context.SECURITY_CREDENTIALS, SECURITY_CREDENTIALS);
+                env.put(Context.PROVIDER_URL, LDAP_URI);
+                env.put(Context.REFERRAL, "follow");
 
-	private static DirContext ldapContext () throws Exception {
-		Hashtable<String,String> env = new Hashtable <>();
-		return ldapContext(env);
+                ctx = new InitialLdapContext(env, null);
+            } catch (NamingException nex) {
+                System.out.println(nex.getMessage());
+                ctx = null;
+            }
+            return ctx;
+        }        
+        
+        // recupera usuário desejado no contexto inicial
+        private static boolean getUserInfo(String userName, LdapContext ctx, SearchControls searchControls) {
+
+            FacesContext context = FacesContext.getCurrentInstance();
+            boolean response = false;
+            String filter = "(uid=" + userName + ")";
+            
+            try {                
+                NamingEnumeration<SearchResult> answer = ctx.search(SEARCH_BASE, filter, searchControls); 
+                if (answer.hasMore()) {                    
+
+                    Attributes attrs = answer.next().getAttributes();
+                    
+                    Usuario user = new Usuario();
+                    user.setNome(attrs.get("givenname").get().toString());
+                    user.setPosto(attrs.get("title").get().toString());
+                    user.setUsername(attrs.get("uid").get().toString());
+                    
+                    context.getExternalContext().getSessionMap().put("usuarioLogado",user);
+                    response = true;
+                } else {
+                    context.getExternalContext().getSessionMap().put("usuarioLogado",null);
+                }
+            } catch (Exception ex) {
+                context.getExternalContext().getSessionMap().put("usuarioLogado",null);
+            }
+            return response;
+        }        
+
+	public static boolean autentica (String user, String password) {            
+            LdapContext ctx = getLdapContext();                        
+            SearchControls ctrl = getSearchControls();            
+            
+            return getUserInfo(user, ctx, ctrl);
 	}
 
-	private static DirContext ldapContext (Hashtable <String,String>env) throws Exception {
-                env.put(Context.SECURITY_AUTHENTICATION, "none");
-		env.put(Context.INITIAL_CONTEXT_FACTORY, contextFactory);
-		env.put(Context.PROVIDER_URL, ldapURI);
-		DirContext ctx = new InitialDirContext(env);
-		return ctx;
-	}
-
-	public static String getUid (String user) throws Exception {
-		DirContext ctx = ldapContext();
-
-		String filter = "(uid=" + user + ")";
-		SearchControls ctrl = new SearchControls();
-		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		NamingEnumeration answer = ctx.search(searchBase, filter, ctrl);
-
-		String dn;
-		if (answer.hasMore()) {
-			SearchResult result = (SearchResult) answer.next();
-			dn = result.getNameInNamespace();
-		}
-		else {
-			dn = null;
-		}
-		answer.close();
-		return dn;
-	}
-
-	private static boolean testBind (String dn, String password) throws Exception {
+	private static boolean checaSenha (String user, String password) throws Exception {
 		Hashtable<String,String> env = new Hashtable <String,String>();
 		env.put(Context.SECURITY_AUTHENTICATION, "simple");
-		env.put(Context.SECURITY_PRINCIPAL, dn);
+		env.put(Context.SECURITY_PRINCIPAL, user);
 		env.put(Context.SECURITY_CREDENTIALS, password);
-
+/*
 		try {
-			ldapContext(env);
+                    ldapContext(env);
+		} catch (javax.naming.AuthenticationException e) {
+                    return false;
 		}
-		catch (javax.naming.AuthenticationException e) {
-			return false;
-		}
+*/                
 		return true;
 	}
 
-/*        
-	public static void main(String args[]) throws Exception {
-		if (args.length != 2) {
-			System.out.println( "missing requried username and password" );
-			System.exit(1);
-		}
-
-		String user = args[0];
-		String password = args[1];
-		String dn = getUid( user );
-
-		if (dn != null) {
-			/* Found user - test password 
-			if ( testBind( dn, password ) ) {
-				System.out.println( "user '" + user + "' authentication succeeded" );
-				System.exit(0);
-			}
-			else {
-				System.out.println( "user '" + user + "' authentication failed" );
-				System.exit(1);
-			}
-		}
-		else {
-			System.out.println( "user '" + user + "' not found" );
-			System.exit(1);
-		}
-	}    
-*/    
 }

@@ -5,6 +5,7 @@
  */
 package br.eb.ctex.sisar.util;
 
+import br.eb.ctex.sisar.modelo.Usuario;
 import javax.faces.application.NavigationHandler;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
@@ -27,7 +28,7 @@ public class Autorizador implements PhaseListener {
             return;
         }
         
-        String userLoggedIn = (String) context.getExternalContext().getSessionMap().get("usuarioLogado");
+        Usuario userLoggedIn = (Usuario) context.getExternalContext().getSessionMap().get("usuarioLogado");
 
         if(userLoggedIn != null) {
             return;

@@ -5,9 +5,11 @@
  */
 package br.eb.ctex.sisar.controller;
 
+import br.eb.ctex.sisar.modelo.Usuario;
 import br.eb.ctex.sisar.util.LCAuth;
 import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
@@ -22,11 +24,13 @@ public class LoginController implements Serializable {
     private String senha;
     private String msg;
     private String usuario;
-    private String userLoggedIn;
+    private String perfil;
+    private Usuario userLoggedIn;
     
     private static final long serialVersionUID = 1094801825228386363L;
     
     public LoginController() {
+        this.perfil = "ADMINISTRADOR";
     }
     
     public String getSenha() {
@@ -52,17 +56,37 @@ public class LoginController implements Serializable {
     public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
+
+    /**
+     * @return the perfil
+     */
+    public String getPerfil() {
+        return perfil;
+    }
+
+    /**
+     * @param perfil the perfil to set
+     */
+    public void setPerfil(String perfil) {
+        this.perfil = perfil;
+    }
     
     public String login() throws Exception {                
         FacesContext context = FacesContext.getCurrentInstance();
-        String dn = LCAuth.getUid( usuario );
-
-        if (dn != null) {
-            userLoggedIn = usuario;
-            context.getExternalContext().getSessionMap().put("usuarioLogado",usuario);
+        
+        if (LCAuth.autentica(usuario,senha)) {
+            
+            userLoggedIn = (Usuario) context.getExternalContext().getSessionMap().get("usuarioLogado");
+            
+            // consultar perfil de usuário no banco de dados
+            
             return "index?faces-redirect=true";
-        } else {            
-            return "login?faces-redirect=true";
+        } else { 
+            // apresenta mensagem no contexto do faces
+            FacesMessage faces = new FacesMessage("Credenciais inválidas!"); 
+            context.addMessage(null, faces);            
+
+            return "login?faces-redirect=false";
         }
         
     }
@@ -76,14 +100,14 @@ public class LoginController implements Serializable {
     }  
     
 
-    public String getUserLoggedIn() {
+    public Usuario getUserLoggedIn() {
         return userLoggedIn;
     }
     
     /**
      * @param userLoggedIn the userLoggedIn to set
      */
-    public void setUserLoggedIn(String userLoggedIn) {
+    public void setUserLoggedIn(Usuario userLoggedIn) {
         this.userLoggedIn = userLoggedIn;
     }
 
