@@ -31,9 +31,17 @@ public class Arranchamento implements Serializable {
     private Date dataArr;
     private String posto;
     private String nome;
-    private boolean cafe;
-    private boolean almoco;
-    private boolean janta;
+    private Boolean cafe;
+    private Boolean almoco;
+    private Boolean janta;
+    
+    public Arranchamento() {        
+    }
+    
+    public Arranchamento(Usuario usuario) {
+        this.posto = usuario.getPosto();
+        this.nome = usuario.getNome();
+    }
 
     public Long getId() {
         return id;
@@ -95,35 +103,35 @@ public class Arranchamento implements Serializable {
     /**
      * @param cafe the cafe to set
      */
-    public void setCafe(boolean cafe) {
+    public void setCafe(Boolean cafe) {
         this.cafe = cafe;
     }
 
     /**
      * @return the almoco
      */
-    public boolean getAlmoco() {
+    public Boolean getAlmoco() {
         return almoco;
     }
 
     /**
      * @param almoco the almoco to set
      */
-    public void setAlmoco(boolean almoco) {
+    public void setAlmoco(Boolean almoco) {
         this.almoco = almoco;
     }
 
     /**
      * @return the janta
      */
-    public boolean getJanta() {
+    public Boolean getJanta() {
         return janta;
     }
 
     /**
      * @param janta the janta to set
      */
-    public void setJanta(boolean janta) {
+    public void setJanta(Boolean janta) {
         this.janta = janta;
     }
 

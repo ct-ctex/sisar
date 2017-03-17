@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ArranchamentoEditDlg" widgetVar="ArranchamentoEditDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.EditArranchamentoTitle}">
+            <h:form id="ArranchamentoEditForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{arranchamentoController.selected != null}">
+                        <p:outputLabel value="#{bundle.EditArranchamentoLabel_id}" for="id" />
+                        <p:inputText id="id" value="#{arranchamentoController.selected.id}" title="#{bundle.EditArranchamentoTitle_id}" />
+                        <p:outputLabel value="#{bundle.EditArranchamentoLabel_dataArr}" for="dataArr" />
+                        <p:calendar id="dataArr" pattern="MM/dd/yyyy" value="#{arranchamentoController.selected.dataArr}" title="#{bundle.EditArranchamentoTitle_dataArr}"  showOn="button"/>
+                        <p:outputLabel value="#{bundle.EditArranchamentoLabel_posto}" for="posto" />
+                        <p:inputText id="posto" value="#{arranchamentoController.selected.posto}" title="#{bundle.EditArranchamentoTitle_posto}" />
+                        <p:outputLabel value="#{bundle.EditArranchamentoLabel_nome}" for="nome" />
+                        <p:inputText id="nome" value="#{arranchamentoController.selected.nome}" title="#{bundle.EditArranchamentoTitle_nome}" />
+                        <p:outputLabel value="#{bundle.EditArranchamentoLabel_cafe}" for="cafe" />
+                        <p:selectBooleanCheckbox id="cafe" value="#{arranchamentoController.selected.cafe}" />
+                        <p:outputLabel value="#{bundle.EditArranchamentoLabel_almoco}" for="almoco" />
+                        <p:selectBooleanCheckbox id="almoco" value="#{arranchamentoController.selected.almoco}" />
+                        <p:outputLabel value="#{bundle.EditArranchamentoLabel_janta}" for="janta" />
+                        <p:selectBooleanCheckbox id="janta" value="#{arranchamentoController.selected.janta}" />
+                        <p:outputLabel value="#{bundle.EditArranchamentoLabel_serialVersionUID}" for="serialVersionUID" />
+                        <p:inputText id="serialVersionUID" value="#{arranchamentoController.selected.serialVersionUID}" title="#{bundle.EditArranchamentoTitle_serialVersionUID}" />
+                    </p:panelGrid>
+                    <p:commandButton actionListener="#{arranchamentoController.update}" value="#{bundle.Save}" update="display,:ArranchamentoListForm:datalist,:growl" oncomplete="handleSubmit(args, 'ArranchamentoEditDialog');"/>
+                    <p:commandButton value="#{bundle.Cancel}" onclick="ArranchamentoEditDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

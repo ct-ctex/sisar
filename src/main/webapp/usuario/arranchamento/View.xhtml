@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog id="ArranchamentoViewDlg" widgetVar="ArranchamentoViewDialog" modal="true" resizable="false" appendTo="@(body)" header="#{bundle.ViewArranchamentoTitle}">
+            <h:form id="ArranchamentoViewForm">
+                <h:panelGroup id="display">
+                    <p:panelGrid columns="2" rendered="#{arranchamentoController.selected != null}">
+                        <h:outputText value="#{bundle.ViewArranchamentoLabel_id}"/>
+                        <h:outputText value="#{arranchamentoController.selected.id}" title="#{bundle.ViewArranchamentoTitle_id}"/>
+                        <h:outputText value="#{bundle.ViewArranchamentoLabel_dataArr}"/>
+                        <h:outputText value="#{arranchamentoController.selected.dataArr}" title="#{bundle.ViewArranchamentoTitle_dataArr}">
+                            <f:convertDateTime pattern="MM/dd/yyyy" />
+                        </h:outputText>
+                        <h:outputText value="#{bundle.ViewArranchamentoLabel_posto}"/>
+                        <h:outputText value="#{arranchamentoController.selected.posto}" title="#{bundle.ViewArranchamentoTitle_posto}"/>
+                        <h:outputText value="#{bundle.ViewArranchamentoLabel_nome}"/>
+                        <h:outputText value="#{arranchamentoController.selected.nome}" title="#{bundle.ViewArranchamentoTitle_nome}"/>
+                        <h:outputText value="#{bundle.ViewArranchamentoLabel_cafe}"/>
+                        <p:selectBooleanCheckbox value="#{arranchamentoController.selected.cafe}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewArranchamentoLabel_almoco}"/>
+                        <p:selectBooleanCheckbox value="#{arranchamentoController.selected.almoco}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewArranchamentoLabel_janta}"/>
+                        <p:selectBooleanCheckbox value="#{arranchamentoController.selected.janta}" disabled="true"/>
+                        <h:outputText value="#{bundle.ViewArranchamentoLabel_serialVersionUID}"/>
+                        <h:outputText value="#{arranchamentoController.selected.serialVersionUID}" title="#{bundle.ViewArranchamentoTitle_serialVersionUID}"/>
+                    </p:panelGrid>
+                    <p:commandButton value="#{bundle.Close}" onclick="ArranchamentoViewDialog.hide()"/>
+                </h:panelGroup>
+            </h:form>
+        </p:dialog>
+
+    </ui:composition>
+</html>

@@ -39,6 +39,16 @@
     height: 78px;
 }
 
+.ui-panel-usuario {
+    background-color: #000;
+    border-style: none;
+    margin-top: 2px;
+    padding-top: 5px;
+    padding-right: 8px;
+    height: 25px;
+    text-align: right;
+}
+
 .ui-panel-rodape {
     background-image:url(img/rodape.png); 
     background-position: center; 

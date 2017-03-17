@@ -25,12 +25,13 @@ public class LoginController implements Serializable {
     private String msg;
     private String usuario;
     private String perfil;
+    private String nometela;
     private Usuario userLoggedIn;
     
     private static final long serialVersionUID = 1094801825228386363L;
     
     public LoginController() {
-        this.perfil = "ADMINISTRADOR";
+        this.perfil = "USUARIO";
     }
     
     public String getSenha() {
@@ -70,6 +71,21 @@ public class LoginController implements Serializable {
     public void setPerfil(String perfil) {
         this.perfil = perfil;
     }
+
+    /**
+     * @return the nometela
+     */
+    public String getNometela() {
+        return nometela;
+    }
+
+    /**
+     * @param nometela the nometela to set
+     */
+    public void setNometela(String nometela) {
+        this.nometela = nometela;
+    }
+
     
     public String login() throws Exception {                
         FacesContext context = FacesContext.getCurrentInstance();
@@ -77,6 +93,7 @@ public class LoginController implements Serializable {
         if (LCAuth.autentica(usuario,senha)) {
             
             userLoggedIn = (Usuario) context.getExternalContext().getSessionMap().get("usuarioLogado");
+            this.setNometela(userLoggedIn.getPosto()+" "+userLoggedIn.getNome());
             
             // consultar perfil de usuário no banco de dados
             

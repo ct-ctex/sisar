@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="../../index.xhtml">
+                        
+        <ui:define id="body" name="body">
+            <p:panel id="panel-centro" styleClass="ui-panel-centro" header="#{bundle.CreateArranchamentoTitle}" class="ui-sem-borda">
+                <h:form id="ArranchamentoCreateForm">
+                    <h:panelGroup id="display">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="#{bundle.CreateArranchamentoLabel_dataArr}" for="dataArr" />
+                            <p:calendar id="dataArr" pattern="dd/MM/yyyy" value="#{arranchamentoController.arranch.dataArr}" title="#{bundle.EditArranchamentoTitle_dataArr}"  showOn="button"/>
+                            <p:outputLabel value="#{bundle.CreateArranchamentoLabel_posto}" for="posto" />
+                            <p:inputText id="posto" value="#{arranchamentoController.arranch.posto}" title="#{bundle.CreateArranchamentoTitle_posto}" />
+                            <p:outputLabel value="#{bundle.CreateArranchamentoLabel_nome}" for="nome" />
+                            <p:inputText id="nome" value="#{arranchamentoController.arranch.nome}" title="#{bundle.CreateArranchamentoTitle_nome}" />
+                            <p:outputLabel value="#{bundle.CreateArranchamentoLabel_cafe}" for="cafe" />
+                            <p:selectBooleanCheckbox id="cafe" value="#{arranchamentoController.arranch.cafe}" />
+                            <p:outputLabel value="#{bundle.CreateArranchamentoLabel_almoco}" for="almoco" />
+                            <p:selectBooleanCheckbox id="almoco" value="#{arranchamentoController.arranch.almoco}" />
+                            <p:outputLabel value="#{bundle.CreateArranchamentoLabel_janta}" for="janta" />
+                            <p:selectBooleanCheckbox id="janta" value="#{arranchamentoController.arranch.janta}" />
+                        </p:panelGrid>
+                        <p:commandButton actionListener="#{arranchamentoController.create}" value="#{bundle.Save}" update=":message" oncomplete="handleSubmit(args,'ArranchamentoCreateDialog');"/>
+                        <p:commandButton value="#{bundle.Cancel}" />
+                    </h:panelGroup>
+                </h:form>
+            </p:panel>
+        </ui:define>
+        
+
+    </ui:composition>
+</html>

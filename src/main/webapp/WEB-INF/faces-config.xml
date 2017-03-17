@@ -12,6 +12,10 @@
         <lifecycle>
             <phase-listener>br.eb.ctex.sisar.util.Autorizador</phase-listener>
         </lifecycle>
+        <resource-bundle>
+            <base-name>/Bundle</base-name>
+            <var>bundle</var>
+        </resource-bundle>
     </application>
 
 </faces-config>

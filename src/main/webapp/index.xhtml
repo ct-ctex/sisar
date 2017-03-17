@@ -16,23 +16,25 @@
             <h:form id="menuForm" prependId="false">
                 <p:panelGrid class="ui-sem-borda">
                     <p:row class="ui-sem-borda">
-                        <p:column style="width: 50%;" class="ui-sem-borda">
-                            <p:menubar class="ui-sem-borda">
+                        <p:menubar class="ui-sem-borda" style="margin-top: 2px">
                                 <p:menuitem value="#{bundle.Home}" outcome="/index" icon="ui-icon-home"/>
                                 <p:submenu label="#{bundle.Cadastro}" rendered="#{loginController.perfil eq 'ADMINISTRADOR'}">
                                 </p:submenu>
-                                <p:submenu label="#{bundle.Avaliacoes}" rendered="#{loginController.perfil eq 'USUARIO'}">
+                                <p:submenu label="#{bundle.Arranchamento}" rendered="#{loginController.perfil eq 'USUARIO'}">
+                                    <p:menuitem value="#{bundle.CreateArranchamentoTitle}" outcome="/usuario/arranchamento/Create" actionListener="#{arranchamentoController.preparecreate}" />
                                 </p:submenu>
                                 <p:menuitem value="#{bundle.UserLogout}" action="#{loginController.logout}"/>
-                            </p:menubar>
-                        </p:column>                        
-                        <p:column style="width: 25%;" class="ui-sem-borda">
-                            <p:outputLabel value="Usuario: #{loginController.userLoggedIn.nome}" styleClass="ui-sem-borda"/>
-                        </p:column>
+                        </p:menubar>
+                    </p:row>
+                    <p:row class="ui-sem-borda">
+                        <div class="ui-panel-usuario">
+                            <p:outputLabel value="Bem vindo #{loginController.nometela}" style="color: white"/>
+                        </div>
                     </p:row>
                 </p:panelGrid>
             </h:form>
         </ui:define>
+        
         <ui:define name="center">                        
             <ui:insert name="body">
                 <p:panel id="panel-centro" styleClass="ui-panel-centro"/>
